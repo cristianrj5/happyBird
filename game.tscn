@@ -1,0 +1,105 @@
+[gd_scene load_steps=15 format=3 uid="uid://ih0pf0yw0h20"]
+
+[ext_resource type="PackedScene" uid="uid://cmyfuwtnso43c" path="res://pajarito.tscn" id="1_8dysm"]
+[ext_resource type="Script" path="res://game.gd" id="1_o0anh"]
+[ext_resource type="Script" path="res://parallax_background.gd" id="2_lejhq"]
+[ext_resource type="Texture2D" uid="uid://bj1o846f2ewft" path="res://flappy-bird-assets/sprites/background-night.png" id="2_v8mu6"]
+[ext_resource type="Texture2D" uid="uid://bp8ylueanynyk" path="res://flappy-bird-assets/sprites/base.png" id="3_3dc3s"]
+[ext_resource type="FontFile" uid="uid://npefoxuc8g1y" path="res://flappy-bird-assets/Flappy-Bird.ttf" id="6_1i2ia"]
+[ext_resource type="Texture2D" uid="uid://bn83we6gmhhvu" path="res://flappy-bird-assets/sprites/message.png" id="7_0mfdy"]
+[ext_resource type="Script" path="res://mensaje.gd" id="7_hhmn4"]
+[ext_resource type="Texture2D" uid="uid://de3hegqvsvx7t" path="res://flappy-bird-assets/sprites/gameover.png" id="9_danrt"]
+[ext_resource type="AudioStream" uid="uid://csd8r0mbcphqk" path="res://flappy-bird-assets/audio/hit.wav" id="10_a5733"]
+[ext_resource type="AudioStream" uid="uid://df0cmeeewfwuk" path="res://flappy-bird-assets/audio/point.ogg" id="11_8kyax"]
+[ext_resource type="AudioStream" uid="uid://bpcqxqcnk6ig0" path="res://flappy-bird-assets/audio/wing.wav" id="12_b4y8h"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cko0r"]
+size = Vector2(727, 111)
+
+[sub_resource type="LabelSettings" id="LabelSettings_wl03t"]
+font = ExtResource("6_1i2ia")
+font_size = 60
+outline_color = Color(0.00351917, 0.00351917, 0.00351917, 1)
+shadow_offset = Vector2(6, 1)
+
+[node name="game" type="Node"]
+script = ExtResource("1_o0anh")
+
+[node name="crearObsTimer" type="Timer" parent="."]
+wait_time = 2.0
+autostart = true
+
+[node name="pajarito" parent="." instance=ExtResource("1_8dysm")]
+position = Vector2(58, 99)
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+script = ExtResource("2_lejhq")
+
+[node name="ParallaxLayer2" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_mirroring = Vector2(363, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer2"]
+position = Vector2(183, 292)
+scale = Vector2(1.26042, 1.12891)
+texture = ExtResource("2_v8mu6")
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_mirroring = Vector2(360.725, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+position = Vector2(180, 581)
+scale = Vector2(1.07969, 1)
+texture = ExtResource("3_3dc3s")
+
+[node name="suelo" type="StaticBody2D" parent="." groups=["suelo"]]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="suelo"]
+position = Vector2(364, 581)
+shape = SubResource("RectangleShape2D_cko0r")
+
+[node name="techo" type="StaticBody2D" parent="." groups=["suelo"]]
+position = Vector2(1, -631)
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="techo"]
+position = Vector2(364, 581)
+shape = SubResource("RectangleShape2D_cko0r")
+
+[node name="puntos" type="Label" parent="."]
+z_index = 1
+anchors_preset = -1
+anchor_right = 0.056
+anchor_bottom = 0.018
+offset_left = 146.0
+offset_top = 34.0
+offset_right = 165.84
+offset_bottom = 70.48
+text = "0"
+label_settings = SubResource("LabelSettings_wl03t")
+
+[node name="mensaje" type="Sprite2D" parent="."]
+process_mode = 3
+visible = false
+position = Vector2(175, 282)
+scale = Vector2(1, 1.16667)
+texture = ExtResource("7_0mfdy")
+script = ExtResource("7_hhmn4")
+
+[node name="gameOver" type="Sprite2D" parent="mensaje"]
+visible = false
+position = Vector2(5, 163.714)
+texture = ExtResource("9_danrt")
+
+[node name="hit" type="AudioStreamPlayer" parent="."]
+process_mode = 3
+stream = ExtResource("10_a5733")
+
+[node name="point" type="AudioStreamPlayer" parent="."]
+process_mode = 3
+stream = ExtResource("11_8kyax")
+
+[node name="flap" type="AudioStreamPlayer" parent="."]
+process_mode = 3
+stream = ExtResource("12_b4y8h")
+
+[connection signal="timeout" from="crearObsTimer" to="." method="_on_timer_timeout"]
